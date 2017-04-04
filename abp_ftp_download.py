@@ -29,6 +29,8 @@ def host_to_ip(host):
     Returns the public IP address for a host
     >>>host_to_ip(ftp.os.uk)
     62.255.172.77
+    >>>host_to_ip(www.google.com)
+    216.58.198.228
     '''
 
     return socket.gethostbyname('ftp.os.uk')
@@ -51,10 +53,14 @@ def get_filenames(ftp_connection,data_dir):
     Returns a list with the AddressBase files which
     will be downloaded.
     >>>get_filenames(object,'../from-os/DCS0002464055')
-    ['AddressBasePremium_FULL_2017-03-23_001_csv.zip', 'AddressBasePremium_FULL_2017-03-23_002_csv.zip']
+    ['AddressBasePremium_FULL_2017-03-23_001_csv.zip',\
+    'AddressBasePremium_FULL_2017-03-23_002_csv.zip']
     '''
-
+    
+    #Change working directory to where the files for Address Base are located
     ftp_connection.cwd(data_dir)
+    
+    #Return a list of files within the working directory
     files = ftp_connection.nlst()
 
     #Appends to a list the filename if the string 'Address' is part of the filename.
@@ -68,6 +74,7 @@ def download_files(ftp_connection,filenames,download_dir):
     '''
 
     for filename in filenames:
+        
         ftp_connection.retrbinary('RETR {0}'.format(filename),\
                                   open('{0}\\{1}'.format(download_dir,filename),'wb').write\
                                   )
