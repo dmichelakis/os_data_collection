@@ -33,6 +33,7 @@ def host_to_ip(host):
     216.58.198.228
     '''
 
+    #Use the socket module to get IP of hostname
     return socket.gethostbyname('ftp.os.uk')
 
 def ftp_connection(ip,username,password):
@@ -43,7 +44,10 @@ def ftp_connection(ip,username,password):
     object
     '''
     
+    #Open a connection to the IP of OS FTP
     ftp = FTP(ip)
+    
+    #Authenticate with the FTP connection using credentials
     ftp.login(username,password)
 
     return ftp
