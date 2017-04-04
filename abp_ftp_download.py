@@ -5,12 +5,20 @@ import os
 def configure():
 
     result = {}
-
+    
+    #This is the official OS FTP website
     result['host'] = 'ftp.os.uk'
+    
+    #DCS000... is the folder which we have in our FTP; this could be
+    #different for different users.
     result['ftp_dir'] = '../from-os/DCS0002464055'
+    
+    #Choosing to download the data in a temporary directory
     result['download_dir'] = "C:\\TEMP"
 
     #I have stored our FTP credentials in the system's environment
+    #For other users this could be hardcoded or read from a file,
+    #database and so on.
     result['username'] = os.getenv('osma_ftp_user')
     result['password'] = os.getenv('osma_ftp_pass')
 
@@ -19,14 +27,18 @@ def configure():
 def host_to_ip(host):
     '''(str) -> str
     Returns the public IP address for a host
+    >>>host_to_ip(ftp.os.uk)
+    62.255.172.77
     '''
 
     return socket.gethostbyname('ftp.os.uk')
 
 def ftp_connection(ip,username,password):
-    '''
+    '''(str,str,str) -> object
     Returns an authentication FTP connection object
     with a memory address
+    >>>ftp_connection('62.255.172.77','john_doe','password')
+    object
     '''
     
     ftp = FTP(ip)
@@ -37,16 +49,20 @@ def ftp_connection(ip,username,password):
 def get_filenames(ftp_connection,data_dir):
     '''(str) -> list
     Returns a list with the AddressBase files which
-    will be downloaded
+    will be downloaded.
+    >>>get_filenames(object,'../from-os/DCS0002464055')
+    ['AddressBasePremium_FULL_2017-03-23_001_csv.zip', 'AddressBasePremium_FULL_2017-03-23_002_csv.zip']
     '''
 
     ftp_connection.cwd(data_dir)
     files = ftp_connection.nlst()
 
+    #Appends to a list the filename if the string 'Address' is part of the filename.
+    #To avoid downloading files which are not Address Base Premium related.
     return filter(lambda x: 'Address' in x,files)
 
 def download_files(ftp_connection,filenames,download_dir):
-    '''
+    '''(object,list,str) -> None
     Returns None & downloads all the files for AddressBase
     Premium in the download directory set in configure()
     '''
