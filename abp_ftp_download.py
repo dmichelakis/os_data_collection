@@ -75,9 +75,11 @@ def download_files(ftp_connection,filenames,download_dir):
 
     for filename in filenames:
         
-        ftp_connection.retrbinary('RETR {0}'.format(filename),\
-                                  open('{0}\\{1}'.format(download_dir,filename),'wb').write\
-                                  )
+        download_file = 'RETR {0}'.format(filename)
+        write_file = '{0}\\{1}'.format(download_dir,filename)
+        
+        ftp_connection.retrbinary(download_file,open(write_file,'wb').write)
+    
     return None
 
 def main():
